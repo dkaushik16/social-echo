@@ -1,5 +1,7 @@
-export function asyncHandler(requestHandler) {
+ function asyncHandler(requestHandler) {
   return async function (req, res, next) {
     Promise.resolve(requestHandler(req, res, next)).catch((err) => next(err));
   };
 }
+
+export {asyncHandler}
