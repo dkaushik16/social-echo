@@ -6,6 +6,9 @@ import {
   renewAccessToken,
   changePassword,
   getCurrentUser,
+  updateAccountDetails,
+  updateAvatar,
+  updateCoverImage,
 } from "../controllers/user.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import { verifyToken } from "../middlewares/auth.middleware.js";
@@ -33,5 +36,10 @@ router.route("/logout").post(verifyToken, logoutUser);
 router.route("/refresh-token").post(renewAccessToken);
 router.route("/change-password").post(verifyToken, changePassword);
 router.route("/current-user").get(verifyToken, getCurrentUser);
+router.route("/update-details").patch(verifyToken,updateAccountDetails)
+router.route("/update-user-avatar").patch(verifyToken, upload.single("avatar"), updateAvatar);
+router.route("/update-cover-image").patch(verifyToken, upload.single("coverImage"), updateCoverImage);
+
+
 
 export default router;
