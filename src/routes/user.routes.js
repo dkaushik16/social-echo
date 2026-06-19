@@ -14,6 +14,7 @@ import {
 } from "../controllers/user.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import { verifyToken } from "../middlewares/auth.middleware.js";
+import errorHandler from "../middlewares/error.middleware.js";
 
 const router = Router();
 
@@ -51,6 +52,7 @@ router
 router.route("/channel/:username").get(verifyToken, getUserChannelProfile);
 
 router.route("/watch-history").get(verifyToken, getWatchHistory);
+
 
 
 export default router;

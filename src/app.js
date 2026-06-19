@@ -30,6 +30,18 @@ import errorHandler from "./middlewares/error.middleware.js";
 // ROUTES DECLARATION
 app.use("/api/v1/users", userRouter);
 
+
+
+
+// NOT FOUND HANDLER
+app.use((req, res, next) => {
+  const error = new Error(`Route Not Found - ${req.originalUrl}`);
+  error.statusCode = 404;
+  error.errors = ["The requested endpoint does not exist or the URL is malformed."];
+  
+  next(error); 
+});
+
 // ERROR HANDLER
 app.use(errorHandler);
 
