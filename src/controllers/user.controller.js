@@ -7,6 +7,7 @@ import {
 } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken";
+import mongoose from "mongoose";
 
 // Helper function to generate access and refresh tokens
 const generateAccessAndRefreshTokens = async (userId) => {
@@ -129,7 +130,7 @@ const logoutUser = asyncHandler(async (req, res) => {
   const userId = req.user._id;
   await User.findByIdAndUpdate(
     userId,
-    { $set: { refreshToken: undefined } },
+    { $set: { refreshToken: null } },
     { new: true }
   );
   return res
@@ -260,7 +261,7 @@ const updateAvatar = asyncHandler(async (req, res) => {
   ).select("-password -refreshToken");
 
   // to delete the old avatar from cloudinary if it exists
-   deleteFromCloudinary(oldAvatarUrl);
+  deleteFromCloudinary(oldAvatarUrl);
 
   return res
     .status(200)
@@ -270,7 +271,7 @@ const updateAvatar = asyncHandler(async (req, res) => {
 // UPDATE USER COVER IMAGE
 const updateCoverImage = asyncHandler(async (req, res) => {
   const coverImageLocalPath = req.file?.path || "";
-  console.log("FLAGGED USERRR: ", req.user);
+
   if (!coverImageLocalPath) {
     throw new ApiError(400, "Cover image file is required");
   }
@@ -289,11 +290,119 @@ const updateCoverImage = asyncHandler(async (req, res) => {
   ).select("-password -refreshToken");
 
   // to delete the old cover image from cloudinary if it exists
-   deleteFromCloudinary(oldCoverImageUrl);
+  deleteFromCloudinary(oldCoverImageUrl);
 
   return res
     .status(200)
     .json(new ApiResponse(200, user, "Cover image updated successfully"));
+});
+
+// GET USER CHANNEL PROFILE
+const getUserChannelProfile = asyncHandler(async (req, res) => {
+  const { username } = req.params;
+  if (!username) {
+    throw new ApiError(400, "Username is required");
+  }
+
+  const channel = await User.aggregate([
+    { $match: { username: username.toLowerCase() } },
+    {
+      $lookup: {
+        from: "subscriptions",
+        localField: "_id",
+        foreignField: "channel",
+        as: "subscribers",
+      },
+    },
+    {
+      $lookup: {
+        from: "subscriptions",
+        localField: "_id",
+        foreignField: "subscriber",
+        as: "subscribedTo",
+      },
+    },
+    {
+      $addFields: {
+        subscriberCount: { $size: "$subscribers" },
+        subscribedToCount: { $size: "$subscribedTo" },
+        isSubscribed: {
+          $in: [req.user?._id, "$subscribers.subscriber"],
+        },
+      },
+    },
+    {
+      $project: {
+        email: 1,
+        fullname: 1,
+        username: 1,
+        avatar: 1,
+        coverImage: 1,
+        subscriberCount: 1,
+        subscribedToCount: 1,
+        isSubscribed: 1,
+      },
+    },
+  ]);
+
+  if (!channel || channel.length === 0) {
+    throw new ApiError(404, "Channel not found");
+  }
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(200, channel[0], "Channel profile fetched successfully")
+    );
+});
+
+// GET USER WATCH HISTORY
+const getWatchHistory = asyncHandler(async (req, res) => {
+  const user = await User.aggregate([
+    { $match: { _id: new mongoose.Types.ObjectId(req.user._id) } },
+    {
+      $lookup: {
+        from: "videos",
+        localField: "watchHistory",
+        foreignField: "_id",
+        as: "watchHistory",
+        pipeline: [
+          {
+            $lookup: {
+              from: "users",
+              localField: "owner",
+              foreignField: "_id",
+              as: "owner",
+              pipeline: [
+                {
+                  $project: {
+                    fullname: 1,
+                    username: 1,
+                    avatar: 1,
+                  },
+                },
+              ],
+            },
+          },
+          { $unwind: "$owner" },
+        ],
+      },
+    },
+  ]);
+
+  if (!user || user.length === 0) {
+    throw new ApiError(404, "User not found");
+  }
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        user[0].watchHistory,
+        "Watch history fetched successfully"
+      )
+    );
 });
 
 export {
@@ -301,9 +410,11 @@ export {
   loginUser,
   logoutUser,
   renewAccessToken,
-  changePassword,
+  changePassword,  
   getCurrentUser,
   updateAccountDetails,
   updateAvatar,
   updateCoverImage,
+  getUserChannelProfile,
+  getWatchHistory,
 };
