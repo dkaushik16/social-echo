@@ -28,7 +28,6 @@ const generateAccessAndRefreshTokens = async (userId) => {
 const registerUser = asyncHandler(async (req, res) => {
   // fetch user details from frontend
   const { username, email, fullname, password } = req.body;
-  console.log("email: ", email);
 
   // validations on incoming data
   if (
@@ -410,7 +409,7 @@ export {
   loginUser,
   logoutUser,
   renewAccessToken,
-  changePassword,  
+  changePassword,
   getCurrentUser,
   updateAccountDetails,
   updateAvatar,
