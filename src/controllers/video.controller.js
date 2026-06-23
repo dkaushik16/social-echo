@@ -3,38 +3,107 @@ import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { Video } from "../models/video.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
+import mongoose from "mongoose";
 
 //  GET ALL VIDEOS
 const getAllVideos = asyncHandler(async (req, res) => {
   const {
     page = 1,
     limit = 10,
+    search = "",
     sortBy = "createdAt",
     sortType = "desc",
+    userId,
   } = req.query || {};
 
-  const sortOptions = {};
+  // --- Validate pagination params ---
+  let pageNum = Number(page);
+  let limitNum = Number(limit);
 
-  sortOptions[sortBy] = sortType == "asc" ? 1 : -1;
+  if (isNaN(pageNum) || pageNum < 1) pageNum = 1;
+  if (isNaN(limitNum) || limitNum < 1) limitNum = 10;
+  limitNum = Math.min(limitNum, 30); // cap to prevent abuse
 
-  const videos = await Video.aggregate([
-    { $match: { isPublished: true } },
-    { $sort: sortOptions },
-    { $skip: (Number(page) - 1) * Number(limit) },
-    { $limit: Number(limit) },
+  // --- Validate sort field (whitelist) ---
+  const allowedSortFields = ["createdAt", "views", "duration", "title"];
+  const sortField = allowedSortFields.includes(sortBy) ? sortBy : "createdAt";
+  const sortOrder = sortType === "asc" ? 1 : -1;
+
+  // --- Build match stage ---
+  const matchStage = { isPublished: true };
+
+  if (search?.trim()) {
+    matchStage.$or = [
+      { title: { $regex: search.trim(), $options: "i" } },
+      { description: { $regex: search.trim(), $options: "i" } },
+    ];
+  }
+
+  if (userId) {
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      throw new ApiError(400, "Invalid userId");
+    }
+    matchStage.owner = new mongoose.Types.ObjectId(userId);
+  }
+
+  // --- Build aggregation pipeline (without skip/limit) ---
+  const videoAggregate = Video.aggregate([
+    { $match: matchStage },
+    {
+      $lookup: {
+        from: "users",
+        localField: "owner",
+        foreignField: "_id",
+        as: "owner",
+        pipeline: [
+          {
+            $project: {
+              username: 1,
+              fullName: 1,
+              avatar: 1,
+            },
+          },
+        ],
+      },
+    },
+    { $unwind: "$owner" },
+    {
+      $project: {
+        videoFile: 1,
+        thumbnail: 1,
+        title: 1,
+        description: 1,
+        duration: 1,
+        views: 1,
+        isPublished: 1,
+        createdAt: 1,
+        owner: 1,
+      },
+    },
+    { $sort: { [sortField]: sortOrder } },
   ]);
-  if (!videos) {
+
+  // --- Paginate ---
+  const options = {
+    page: pageNum,
+    limit: limitNum,
+  };
+
+  const result = await Video.aggregatePaginate(videoAggregate, options);
+
+  if (!result) {
     throw new ApiError(500, "Failed to fetch videos");
   }
-  
-  const totalVideos= await Video.countDocuments({isPublished:true})
 
-  const responseData={
-      videos,
-      totalVideos,
-      currentPage:Number(page),
-      totalPages: Math.ceil(totalVideos/limit)
-  }
+  const responseData = {
+    videos: result.docs,
+    videosOnThisPage: result.docs.length,
+    totalVideos: result.totalDocs,
+    currentPage: result.page,
+    totalPages: result.totalPages,
+    hasNextPage: result.hasNextPage,
+    hasPrevPage: result.hasPrevPage,
+  };
 
   return res
     .status(200)
