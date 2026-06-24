@@ -2,7 +2,10 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { Video } from "../models/video.model.js";
-import { uploadOnCloudinary } from "../utils/cloudinary.js";
+import {
+  deleteFromCloudinary,
+  uploadOnCloudinary,
+} from "../utils/cloudinary.js";
 import mongoose from "mongoose";
 
 //  GET ALL VIDEOS
@@ -59,7 +62,7 @@ const getAllVideos = asyncHandler(async (req, res) => {
           {
             $project: {
               username: 1,
-              fullName: 1,
+              fullname: 1,
               avatar: 1,
             },
           },
@@ -159,4 +162,116 @@ const publishVideo = asyncHandler(async (req, res) => {
     .json(new ApiResponse(201, newVideo, "Video published successfully"));
 });
 
-export { getAllVideos, publishVideo };
+//  GET VIDEO BY ID
+const getVideoById = asyncHandler(async (req, res) => {
+  const { videoId } = req.params;
+
+  if (!videoId || !mongoose.Types.ObjectId.isValid(videoId)) {
+    throw new ApiError(400, "Invalid video id");
+  }
+
+  const video = await Video.findById(videoId).populate(
+    "owner",
+    "fullname username avatar"
+  );
+
+  if (!video) {
+    throw new ApiError(404, "Video not found");
+  }
+
+  // Optional: restrict unpublished videos to the owner only
+  if (
+    !video.isPublished &&
+    video.owner._id.toString() !== req.user?._id?.toString()
+  ) {
+    throw new ApiError(404, "Video not found");
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, video, "Video fetched successfully"));
+});
+
+//  UPDATE THE VIDEO
+const updateVideo = asyncHandler(async (req, res) => {
+  const { videoId } = req.params;
+  const { title, description } = req.body || {};
+
+  if (!videoId || !mongoose.Types.ObjectId.isValid(videoId)) {
+    throw new ApiError(400, "Invalid video id");
+  }
+  const video = await Video.findById(videoId);
+
+  if (!video) {
+    throw new ApiError(404, "Video not found");
+  }
+
+  // Ownership check
+  if (video.owner.toString() !== req.user?._id?.toString()) {
+    throw new ApiError(403, "You are not authorized to update this video");
+  }
+
+  const updateFields = {};
+
+  if (title) updateFields.title = title;
+  if (description) updateFields.description = description;
+
+  // thumbnail update handling
+  let oldThumbnailUrl = null;
+  if (req.files?.thumbnail) {
+    const thumbnailLocalPath = req.files.thumbnail[0]?.path;
+    const thumbnail_cloudinary = await uploadOnCloudinary(thumbnailLocalPath);
+
+    if (!thumbnail_cloudinary?.url) {
+      throw new ApiError(500, "Something went wrong while uploading thumbnail");
+    }
+
+    oldThumbnailUrl = video.thumbnail;
+    updateFields.thumbnail = thumbnail_cloudinary.url;
+  }
+
+  // video file update handling
+  let oldVideoFileUrl = null;
+  if (req.files?.videoFile) {
+    const videoFileLocalPath = req.files.videoFile[0]?.path;
+    const video_cloudinary = await uploadOnCloudinary(videoFileLocalPath);
+
+    if (!video_cloudinary?.url) {
+      throw new ApiError(
+        500,
+        "Something went wrong while uploading video file"
+      );
+    }
+
+    oldVideoFileUrl = video.videoFile;
+    updateFields.videoFile = video_cloudinary.url;
+    updateFields.duration = video_cloudinary.duration;
+  }
+
+  if (Object.keys(updateFields).length === 0) {
+    throw new ApiError(400, "At least one field is required to update");
+  }
+
+  const updatedVideo = await Video.findByIdAndUpdate(
+    videoId,
+    { $set: updateFields },
+    { new: true }
+  );
+
+  if (!updatedVideo) {
+    throw new ApiError(500, "Something went wrong while updating the video");
+  }
+
+  if (oldVideoFileUrl) {
+    deleteFromCloudinary(oldVideoFileUrl, "video");
+  }
+  if (oldThumbnailUrl) {
+    deleteFromCloudinary(oldThumbnailUrl);
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, updatedVideo, "Video updated successfully"));
+});
+
+export { getAllVideos, publishVideo, getVideoById, updateVideo };
