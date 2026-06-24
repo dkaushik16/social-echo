@@ -207,7 +207,7 @@ const updateVideo = asyncHandler(async (req, res) => {
   }
 
   // Ownership check
-  if (video.owner.toString() !== req.user?._id?.toString()) {
+  if (!video.owner.equals(req.user?._id)) {
     throw new ApiError(403, "You are not authorized to update this video");
   }
 
@@ -218,8 +218,8 @@ const updateVideo = asyncHandler(async (req, res) => {
 
   // thumbnail update handling
   let oldThumbnailUrl = null;
-  if (req.files?.thumbnail) {
-    const thumbnailLocalPath = req.files.thumbnail[0]?.path;
+  if (req.file) {
+    const thumbnailLocalPath = req.file?.path;
     const thumbnail_cloudinary = await uploadOnCloudinary(thumbnailLocalPath);
 
     if (!thumbnail_cloudinary?.url) {
@@ -228,24 +228,6 @@ const updateVideo = asyncHandler(async (req, res) => {
 
     oldThumbnailUrl = video.thumbnail;
     updateFields.thumbnail = thumbnail_cloudinary.url;
-  }
-
-  // video file update handling
-  let oldVideoFileUrl = null;
-  if (req.files?.videoFile) {
-    const videoFileLocalPath = req.files.videoFile[0]?.path;
-    const video_cloudinary = await uploadOnCloudinary(videoFileLocalPath);
-
-    if (!video_cloudinary?.url) {
-      throw new ApiError(
-        500,
-        "Something went wrong while uploading video file"
-      );
-    }
-
-    oldVideoFileUrl = video.videoFile;
-    updateFields.videoFile = video_cloudinary.url;
-    updateFields.duration = video_cloudinary.duration;
   }
 
   if (Object.keys(updateFields).length === 0) {
@@ -262,9 +244,6 @@ const updateVideo = asyncHandler(async (req, res) => {
     throw new ApiError(500, "Something went wrong while updating the video");
   }
 
-  if (oldVideoFileUrl) {
-    deleteFromCloudinary(oldVideoFileUrl, "video");
-  }
   if (oldThumbnailUrl) {
     deleteFromCloudinary(oldThumbnailUrl);
   }
@@ -274,4 +253,88 @@ const updateVideo = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, updatedVideo, "Video updated successfully"));
 });
 
-export { getAllVideos, publishVideo, getVideoById, updateVideo };
+//  DELETE THE VIDEO
+const deleteVideo = asyncHandler(async (req, res) => {
+  const { videoId } = req.params;
+
+  if (!videoId || !mongoose.Types.ObjectId.isValid(videoId)) {
+    throw new ApiError(400, "Invalid video id");
+  }
+
+  const video = await Video.findById(videoId);
+
+  if (!video) {
+    throw new ApiError(404, "Video not found");
+  }
+
+  // Ownership check
+  if (!video.owner.equals(req.user?._id)) {
+    throw new ApiError(403, "You are not authorized to delete this video");
+  }
+
+  const deletedVideo = await Video.findByIdAndDelete(videoId);
+
+  if (!deletedVideo) {
+    throw new ApiError(500, "Something went wrong while deleting the video");
+  }
+
+  // Clean up Cloudinary assets after successful DB deletion
+  deleteFromCloudinary(video.thumbnail, "image");
+  deleteFromCloudinary(video.videoFile, "video");
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, {}, "Video deleted successfully"));
+});
+
+// TOGGLE PUBLISH STATUS
+const togglePublishStatus = asyncHandler(async (req, res) => {
+  const { videoId } = req.params;
+
+  if (!videoId || !mongoose.Types.ObjectId.isValid(videoId)) {
+    throw new ApiError(400, "Invalid video id");
+  }
+
+  const video = await Video.findById(videoId);
+
+  if (!video) {
+    throw new ApiError(404, "Video not found");
+  }
+
+  // Ownership check
+  if (!video.owner.equals(req.user?._id)) {
+    throw new ApiError(403, "You are not authorized to update this video");
+  }
+
+  const updatedVideo = await Video.findByIdAndUpdate(
+    videoId,
+    { $set: { isPublished: !video.isPublished } },
+    { new: true }
+  );
+
+  if (!updatedVideo) {
+    throw new ApiError(
+      500,
+      "Something went wrong while toggling publish status"
+    );
+  }
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        updatedVideo,
+        `Video ${updatedVideo.isPublished ? "published" : "unpublished"} successfully`
+      )
+    );
+});
+
+export {
+  getAllVideos,
+  publishVideo,
+  getVideoById,
+  updateVideo,
+  deleteVideo,
+  togglePublishStatus,
+};
