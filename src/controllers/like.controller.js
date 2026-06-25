@@ -11,7 +11,7 @@ const toggleVideoLike = asyncHandler(async (req, res) => {
   if (!videoId || !mongoose.Types.ObjectId.isValid(videoId)) {
     throw new ApiError(400, "Invalid video id");
   }
-
+ 
   const existingLike = await Like.findOne({
     video: videoId,
     likedBy: req.user._id,

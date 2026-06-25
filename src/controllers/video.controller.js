@@ -118,17 +118,17 @@ const publishVideo = asyncHandler(async (req, res) => {
   const { title, description } = req.body || {};
 
   if (!title) {
-    throw new ApiError(400, "Title is required");
+    throw new ApiError(400, "title is required");
   }
   if (!description) {
-    throw new ApiError(400, "Description is required");
+    throw new ApiError(400, "description is required");
   }
 
   if (!req.files?.videoFile) {
-    throw new ApiError(400, "Video file is required");
+    throw new ApiError(400, "videoFile is required");
   }
   if (!req.files?.thumbnail) {
-    throw new ApiError(400, "Thumbnail is required");
+    throw new ApiError(400, "thumbnail is required");
   }
 
   const videoFileLocalPath = req.files.videoFile[0]?.path;
