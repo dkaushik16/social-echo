@@ -11,7 +11,7 @@ const toggleVideoLike = asyncHandler(async (req, res) => {
   if (!videoId || !mongoose.Types.ObjectId.isValid(videoId)) {
     throw new ApiError(400, "Invalid video id");
   }
- 
+
   const existingLike = await Like.findOne({
     video: videoId,
     likedBy: req.user._id,
@@ -138,4 +138,39 @@ const getLikedVideos = asyncHandler(async (req, res) => {
     );
 });
 
-export { toggleVideoLike, getLikedVideos };
+// TWEET LIKE TOGGLE HANDLER
+const toggleTweetLike = asyncHandler(async (req, res) => {
+  const { tweetId } = req.params;
+
+  if (!tweetId || !mongoose.Types.ObjectId.isValid(tweetId)) {
+    throw new ApiError(400, "Invalid tweet id");
+  }
+
+  const existingLike = await Like.findOne({
+    tweet: tweetId,
+    likedBy: req.user._id,
+  });
+
+  if (existingLike) {
+    // already liked - remove the like
+    await Like.findByIdAndDelete(existingLike._id);
+
+    return res
+      .status(200)
+      .json(
+        new ApiResponse(200, { isLiked: false }, "Tweet unliked successfully")
+      );
+  }
+
+  const newLike = await Like.create({ tweet: tweetId, likedBy: req.user._id });
+
+  if (!newLike) {
+    throw new ApiError(500, "Something went wrong while liking the tweet");
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, { isLiked: true }, "Tweet liked successfully"));
+});
+
+export { toggleVideoLike, getLikedVideos, toggleTweetLike };
