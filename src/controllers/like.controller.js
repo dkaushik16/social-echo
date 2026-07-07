@@ -2,6 +2,9 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { Like } from "../models/like.model.js";
+import { Video } from "../models/video.model.js";
+import { Tweet } from "../models/tweet.model.js";
+import { Comment } from "../models/comment.model.js";
 import mongoose from "mongoose";
 
 //  VIDEO LIKE TOGGLE HANDLER
@@ -10,6 +13,11 @@ const toggleVideoLike = asyncHandler(async (req, res) => {
 
   if (!videoId || !mongoose.Types.ObjectId.isValid(videoId)) {
     throw new ApiError(400, "Invalid video id");
+  }
+
+  const video = await Video.findById(videoId);
+  if (!video) {
+    throw new ApiError(404, "Video not found");
   }
 
   const existingLike = await Like.findOne({
@@ -146,6 +154,11 @@ const toggleTweetLike = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Invalid tweet id");
   }
 
+  const tweet = await Tweet.findById(tweetId);
+  if (!tweet) {
+    throw new ApiError(404, "Tweet not found");
+  }
+
   const existingLike = await Like.findOne({
     tweet: tweetId,
     likedBy: req.user._id,
@@ -173,4 +186,49 @@ const toggleTweetLike = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, { isLiked: true }, "Tweet liked successfully"));
 });
 
-export { toggleVideoLike, getLikedVideos, toggleTweetLike };
+// COMMENT LIKE TOGGLE HANDLER
+const toggleCommentLike = asyncHandler(async (req, res) => {
+  const { commentId } = req.params;
+
+  if (!commentId || !mongoose.Types.ObjectId.isValid(commentId)) {
+    throw new ApiError(400, "Invalid comment id");
+  }
+
+  const comment = await Comment.findById(commentId);
+  if (!comment) {
+    throw new ApiError(404, "Comment not found");
+  }
+
+  const existingLike = await Like.findOne({
+    comment: commentId,
+    likedBy: req.user._id,
+  });
+
+  if (existingLike) {
+    // already liked - remove the like
+    await Like.findByIdAndDelete(existingLike._id);
+
+    return res
+      .status(200)
+      .json(
+        new ApiResponse(200, { isLiked: false }, "Comment unliked successfully")
+      );
+  }
+
+  const newLike = await Like.create({
+    comment: commentId,
+    likedBy: req.user._id,
+  });
+
+  if (!newLike) {
+    throw new ApiError(500, "Something went wrong while liking the comment");
+  }
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(200, { isLiked: true }, "Comment liked successfully")
+    );
+});
+
+export { toggleVideoLike, getLikedVideos, toggleTweetLike, toggleCommentLike };
