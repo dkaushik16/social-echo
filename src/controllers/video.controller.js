@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
@@ -6,7 +7,6 @@ import {
   deleteFromCloudinary,
   uploadOnCloudinary,
 } from "../utils/cloudinary.js";
-import mongoose from "mongoose";
 
 //  GET ALL VIDEOS
 const getAllVideos = asyncHandler(async (req, res) => {
@@ -186,6 +186,9 @@ const getVideoById = asyncHandler(async (req, res) => {
   ) {
     throw new ApiError(404, "Video not found");
   }
+
+  // increment views after all checks pass
+  await Video.findByIdAndUpdate(videoId, { $inc: { views: 1 } });
 
   return res
     .status(200)
