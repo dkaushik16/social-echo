@@ -1,125 +1,164 @@
-```markdown
 # Social Echo
 
 ![Node.js](https://img.shields.io/badge/Node.js-339933?logo=node.js&logoColor=white)
 ![Express](https://img.shields.io/badge/Express-000000?logo=express&logoColor=white)
 ![MongoDB](https://img.shields.io/badge/MongoDB-47A248?logo=mongodb&logoColor=white)
 ![Cloudinary](https://img.shields.io/badge/Cloudinary-0033FF?logo=cloudinary&logoColor=white)
+![JWT](https://img.shields.io/badge/JWT-000000?logo=jsonwebtokens&logoColor=white)
 
-Social Echo is a YouTube-like backend API built with Node.js, Express, MongoDB, and Cloudinary. It provides a complete REST API for authentication, video publishing, social interactions, playlists, subscriptions, and dashboard analytics.
+Social Echo is a YouTube-like backend REST API built with Node.js, Express, MongoDB, and Cloudinary. It provides a complete API for authentication, video publishing, social interactions, playlists, subscriptions, and dashboard analytics.
+
+---
+
+## Table of Contents
+
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Project Structure](#project-structure)
+- [Getting Started](#getting-started)
+- [Environment Variables](#environment-variables)
+- [API Endpoints](#api-endpoints)
+- [Data Models](#data-models)
+- [Key Design Decisions](#key-design-decisions)
+
+---
 
 ## Features
 
-- User authentication with JWT access and refresh tokens
+- JWT-based authentication with access and refresh tokens
 - Register, login, logout, refresh access token
 - Change password, update profile, avatar, and cover image
-- Upload, update, delete, publish/unpublish videos
+- Upload, update, delete, and publish/unpublish videos
 - Fetch videos with pagination, search, sort, and channel filtering
-- Add, fetch, update, and delete comments
+- Add, fetch, update, and delete comments on videos
 - Toggle likes on videos, comments, and tweets
-- Manage tweets with create, fetch, update, delete
+- Create, fetch, update, and delete tweets (channel community posts)
 - Subscribe and unsubscribe from channels
 - View channel subscribers and subscribed channels
-- Create and manage playlists
-- Dashboard stats for channel videos, views, likes, and subscribers
+- Create and manage playlists with add/remove video support
+- Channel dashboard with stats: videos, views, likes, and subscribers
 - Healthcheck endpoint for service monitoring
+
+---
 
 ## Tech Stack
 
-- Node.js
-- Express.js
-- MongoDB
-- Mongoose
-- Cloudinary
-- JWT (access + refresh tokens)
-- bcrypt
-- multer
-- cookie-parser
-- mongoose-aggregate-paginate-v2
+| Layer | Technology |
+|---|---|
+| Runtime | Node.js |
+| Framework | Express.js |
+| Database | MongoDB |
+| ODM | Mongoose |
+| Media Storage | Cloudinary |
+| Authentication | JWT (access + refresh tokens) |
+| Password Hashing | bcrypt |
+| File Uploads | multer |
+| Pagination | mongoose-aggregate-paginate-v2 |
+
+---
 
 ## Project Structure
 
 ```text
 src/
-  controllers/
-    auth.controller.js
-    video.controller.js
-    comment.controller.js
-    like.controller.js
-    tweet.controller.js
-    subscription.controller.js
-    playlist.controller.js
-    dashboard.controller.js
-    health.controller.js
-  models/
-    user.model.js
-    video.model.js
-    comment.model.js
-    like.model.js
-    tweet.model.js
-    subscription.model.js
-    playlist.model.js
-  routes/
-    auth.routes.js
-    video.routes.js
-    comment.routes.js
-    like.routes.js
-    tweet.routes.js
-    subscription.routes.js
-    playlist.routes.js
-    dashboard.routes.js
-    health.routes.js
-  middlewares/
-    auth.middleware.js
-    upload.middleware.js
-    error.middleware.js
-  utils/
-    asyncHandler.js
-    ApiError.js
-    ApiResponse.js
-    cloudinary.js
-    pagination.js
-  app.js
-  server.js
+├── controllers/
+│   ├── auth.controller.js
+│   ├── video.controller.js
+│   ├── comment.controller.js
+│   ├── like.controller.js
+│   ├── tweet.controller.js
+│   ├── subscription.controller.js
+│   ├── playlist.controller.js
+│   ├── dashboard.controller.js
+│   └── health.controller.js
+├── models/
+│   ├── user.model.js
+│   ├── video.model.js
+│   ├── comment.model.js
+│   ├── like.model.js
+│   ├── tweet.model.js
+│   ├── subscription.model.js
+│   └── playlist.model.js
+├── routes/
+│   ├── auth.routes.js
+│   ├── video.routes.js
+│   ├── comment.routes.js
+│   ├── like.routes.js
+│   ├── tweet.routes.js
+│   ├── subscription.routes.js
+│   ├── playlist.routes.js
+│   ├── dashboard.routes.js
+│   └── health.routes.js
+├── middlewares/
+│   ├── auth.middleware.js
+│   └── upload.middleware.js
+├── utils/
+│   ├── asyncHandler.js
+│   ├── ApiError.js
+│   ├── ApiResponse.js
+│   └── cloudinary.js
+├── app.js
+└── server.js
 .env
+.env.example
 package.json
-Readme.md
+README.md
 ```
 
+---
+
 ## Getting Started
+
+**1. Clone the repository**
 
 ```bash
 git clone https://github.com/<your-username>/social-echo.git
 cd social-echo
+```
+
+**2. Install dependencies**
+
+```bash
 npm install
+```
+
+**3. Configure environment variables**
+
+```bash
 cp .env.example .env
 ```
 
-Configure .env, then run:
+Fill in the required values in `.env` (see [Environment Variables](#environment-variables) below).
+
+**4. Start the development server**
 
 ```bash
 npm run dev
 ```
 
+The server will start on the port defined in your `.env` file.
+
+---
+
 ## Environment Variables
 
 | Variable | Description |
 |---|---|
-| `PORT` | Server port |
+| `PORT` | Port the server listens on |
 | `MONGODB_URI` | MongoDB connection string |
-| `CORS_ORIGIN` | CORS origin wildcard or URL |
-| `NODE_ENV` | Environment mode (development/production) |
-| `ACCESS_TOKEN_SECRET` | Secret for signing access tokens |
-| `ACCESS_TOKEN_EXPIRY` | Access token expiration interval |
-| `REFRESH_TOKEN_SECRET` | Secret for signing refresh tokens |
-| `REFRESH_TOKEN_EXPIRY` | Refresh token expiration interval |
-| `CLOUDINARY_CLOUD_NAME` | Cloudinary cloud name |
-| `CLOUDINARY_API_KEY` | Cloudinary API key |
-| `CLOUDINARY_API_SECRET` | Cloudinary API secret |
-
-Example:
+| `CORS_ORIGIN` | Allowed CORS origin (URL or `*`) |
+| `NODE_ENV` | Environment mode (`development` / `production`) |
+| `ACCESS_TOKEN_SECRET` | Secret key for signing access tokens |
+| `ACCESS_TOKEN_EXPIRY` | Access token expiry duration (e.g. `1d`) |
+| `REFRESH_TOKEN_SECRET` | Secret key for signing refresh tokens |
+| `REFRESH_TOKEN_EXPIRY` | Refresh token expiry duration (e.g. `10d`) |
+| `CLOUDINARY_CLOUD_NAME` | Your Cloudinary cloud name |
+| `CLOUDINARY_API_KEY` | Your Cloudinary API key |
+| `CLOUDINARY_API_SECRET` | Your Cloudinary API secret |
 
 ```env
+# .env.example
+
 PORT=8000
 MONGODB_URI=your_mongodb_connection_string
 CORS_ORIGIN=*
@@ -135,139 +174,138 @@ CLOUDINARY_API_KEY=your_cloudinary_api_key
 CLOUDINARY_API_SECRET=your_cloudinary_api_secret
 ```
 
+---
+
 ## API Endpoints
+
+All routes are prefixed with `/api/v1`.
 
 ### Auth
 
-| Method | Route | Auth | Description |
+| Method | Route | Auth Required | Description |
 |---|---|---|---|
-| POST | `/api/auth/register` | No | Register a new user |
-| POST | `/api/auth/login` | No | Authenticate and receive access and refresh tokens |
-| POST | `/api/auth/logout` | Yes | Logout and clear refresh token |
-| GET | `/api/auth/refresh` | No | Refresh access token using refresh token |
-| GET | `/api/auth/me` | Yes | Get current authenticated user |
-| PATCH | `/api/auth/password` | Yes | Change user password |
-| PATCH | `/api/auth/profile` | Yes | Update user account details |
-| PATCH | `/api/auth/avatar` | Yes | Update avatar image |
-| PATCH | `/api/auth/cover` | Yes | Update cover image |
-| GET | `/api/auth/channel/:id` | No | Get channel profile by ID |
+| POST | `/auth/register` | No | Register a new user |
+| POST | `/auth/login` | No | Login and receive access + refresh tokens |
+| POST | `/auth/logout` | Yes | Logout and clear refresh token |
+| GET | `/auth/refresh` | No | Refresh access token using refresh token |
+| GET | `/auth/me` | Yes | Get current authenticated user |
+| PATCH | `/auth/password` | Yes | Change user password |
+| PATCH | `/auth/profile` | Yes | Update account details |
+| PATCH | `/auth/avatar` | Yes | Update avatar image |
+| PATCH | `/auth/cover` | Yes | Update cover image |
+| GET | `/auth/channel/:id` | No | Get channel profile by user ID |
 
 ### Videos
 
-| Method | Route | Auth | Description |
+| Method | Route | Auth Required | Description |
 |---|---|---|---|
-| POST | `/api/videos` | Yes | Upload a new video |
-| GET | `/api/videos` | No | Fetch all videos with pagination, search, and sort |
-| GET | `/api/videos/:id` | No | Fetch a video by ID |
-| PATCH | `/api/videos/:id` | Yes | Update video title, description, or thumbnail |
-| DELETE | `/api/videos/:id` | Yes | Delete a video |
-| PATCH | `/api/videos/:id/publish` | Yes | Toggle video publish status |
-| GET | `/api/videos/channel/:id` | No | Fetch videos from a specific channel |
+| POST | `/videos` | Yes | Upload a new video |
+| GET | `/videos` | No | Fetch all videos (pagination, search, sort, filter by user) |
+| GET | `/videos/:id` | No | Fetch a video by ID |
+| PATCH | `/videos/:id` | Yes | Update video title, description, or thumbnail |
+| DELETE | `/videos/:id` | Yes | Delete a video and remove assets from Cloudinary |
+| PATCH | `/videos/:id/publish` | Yes | Toggle video publish status |
 
 ### Comments
 
-| Method | Route | Auth | Description |
+| Method | Route | Auth Required | Description |
 |---|---|---|---|
-| POST | `/api/comments` | Yes | Add a comment to a video |
-| GET | `/api/comments/:videoId` | No | Fetch comments for a video |
-| PATCH | `/api/comments/:id` | Yes | Update a comment |
-| DELETE | `/api/comments/:id` | Yes | Delete a comment |
+| POST | `/comments/video/:videoId` | Yes | Add a comment to a video |
+| GET | `/comments/video/:videoId` | No | Fetch comments for a video (paginated + sorted) |
+| PATCH | `/comments/c/:commentId` | Yes | Update a comment |
+| DELETE | `/comments/c/:commentId` | Yes | Delete a comment |
 
 ### Likes
 
-| Method | Route | Auth | Description |
+| Method | Route | Auth Required | Description |
 |---|---|---|---|
-| POST | `/api/likes/video/:videoId` | Yes | Toggle like for a video |
-| POST | `/api/likes/comment/:commentId` | Yes | Toggle like for a comment |
-| POST | `/api/likes/tweet/:tweetId` | Yes | Toggle like for a tweet |
-| GET | `/api/likes/videos` | Yes | Get liked videos with pagination and search |
+| POST | `/likes/video/:videoId` | Yes | Toggle like on a video |
+| POST | `/likes/comment/:commentId` | Yes | Toggle like on a comment |
+| POST | `/likes/tweet/:tweetId` | Yes | Toggle like on a tweet |
+| GET | `/likes/videos` | Yes | Get liked videos (paginated + search) |
 
 ### Tweets
 
-| Method | Route | Auth | Description |
+| Method | Route | Auth Required | Description |
 |---|---|---|---|
-| POST | `/api/tweets` | Yes | Create a tweet |
-| GET | `/api/tweets/user/:userId` | No | Get tweets by user |
-| PATCH | `/api/tweets/:id` | Yes | Update a tweet |
-| DELETE | `/api/tweets/:id` | Yes | Delete a tweet |
+| POST | `/tweets` | Yes | Create a tweet |
+| GET | `/tweets/user/:userId` | No | Get tweets by a specific user (paginated + search) |
+| PATCH | `/tweets/:id` | Yes | Update a tweet |
+| DELETE | `/tweets/:id` | Yes | Delete a tweet |
 
 ### Subscriptions
 
-| Method | Route | Auth | Description |
+| Method | Route | Auth Required | Description |
 |---|---|---|---|
-| POST | `/api/subscriptions/:channelId` | Yes | Toggle subscribe/unsubscribe |
-| GET | `/api/subscriptions/channel/:channelId` | No | Get channel subscribers |
-| GET | `/api/subscriptions` | Yes | Get subscribed channels |
+| POST | `/subscriptions/c/:channelId` | Yes | Toggle subscribe / unsubscribe from a channel |
+| GET | `/subscriptions/c/:channelId` | No | Get subscribers of a channel (paginated + search) |
+| GET | `/subscriptions/my/channels` | Yes | Get channels the logged-in user subscribes to |
 
 ### Playlists
 
-| Method | Route | Auth | Description |
+| Method | Route | Auth Required | Description |
 |---|---|---|---|
-| POST | `/api/playlists` | Yes | Create a playlist |
-| GET | `/api/playlists` | Yes | Get user playlists |
-| GET | `/api/playlists/:id` | Yes | Get a single playlist |
-| PATCH | `/api/playlists/:id` | Yes | Update playlist details |
-| DELETE | `/api/playlists/:id` | Yes | Delete a playlist |
-| POST | `/api/playlists/:id/videos` | Yes | Add a video to a playlist |
-| DELETE | `/api/playlists/:id/videos/:videoId` | Yes | Remove a video from a playlist |
+| POST | `/playlists` | Yes | Create a playlist |
+| GET | `/playlists` | Yes | Get logged-in user's playlists (paginated + search) |
+| GET | `/playlists/:id` | No | Get a single playlist with full video details |
+| PATCH | `/playlists/:id` | Yes | Update playlist name or description |
+| DELETE | `/playlists/:id` | Yes | Delete a playlist |
+| POST | `/playlists/:id/videos/:videoId` | Yes | Add a video to a playlist |
+| DELETE | `/playlists/:id/videos/:videoId` | Yes | Remove a video from a playlist |
 
 ### Dashboard
 
-| Method | Route | Auth | Description |
+| Method | Route | Auth Required | Description |
 |---|---|---|---|
-| GET | `/api/dashboard/videos` | Yes | Get channel videos with pagination, search, and sort |
-| GET | `/api/dashboard/stats` | Yes | Get channel stats |
+| GET | `/dashboard/stats` | Yes | Get channel stats (videos, views, likes, subscribers) |
+| GET | `/dashboard/videos` | Yes | Get channel videos (paginated + search + sort) |
 
 ### Healthcheck
 
-| Method | Route | Auth | Description |
+| Method | Route | Auth Required | Description |
 |---|---|---|---|
-| GET | `/api/health` | No | Check API health and availability |
+| GET | `/healthcheck` | No | Check API health and availability |
 
-## Data Models Overview
+---
 
-- User
-  - `name`, `email`, `password`, `role`
-  - `avatar`, `coverImage`
-  - `refreshToken`
+## Data Models
 
-- Video
-  - `title`, `description`
-  - `videoFile`, `thumbnail`
-  - `owner`, `duration`, `views`
-  - `isPublished`, `createdAt`
+### User
+`username`, `email`, `fullName`, `password`, `avatar`, `coverImage`, `refreshToken`, `watchHistory`
 
-- Comment
-  - `content`, `video`, `owner`
-  - `likes`, `createdAt`
+### Video
+`title`, `description`, `videoFile`, `thumbnail`, `owner`, `duration`, `views`, `isPublished`
 
-- Like
-  - `user`, `targetId`
-  - `type` (`video`, `comment`, `tweet`)
+### Comment
+`content`, `video`, `owner`
 
-- Tweet
-  - `content`, `owner`
-  - `likes`, `createdAt`
+### Like
+`video`, `comment`, `tweet`, `likedBy`
 
-- Subscription
-  - `user`, `channel`
-  - `createdAt`
+### Tweet
+`content`, `owner`
 
-- Playlist
-  - `title`, `description`, `owner`
-  - `videos`, `createdAt`
+### Subscription
+`subscriber`, `channel`
+
+### Playlist
+`name`, `description`, `videos`, `owner`
+
+---
 
 ## Key Design Decisions
 
-- Pagination pattern
-  - Uses `mongoose-aggregate-paginate-v2` for consistent pagination across endpoints with aggregate pipelines, search, filtering, and sorting.
+**Pagination with aggregation pipelines**
+All list endpoints use `mongoose-aggregate-paginate-v2` with MongoDB aggregation pipelines — enabling consistent pagination alongside `$lookup` joins, `$match` filters, and `$sort` in a single pipeline. This avoids the limitations of plain `.find().skip().limit()` once joins and computed fields are involved.
 
-- Aggregation pipelines
-  - Aggregations are used to compute dashboard statistics, filter query results, and join related data efficiently.
+**Polymorphic Like model**
+A single `Like` model handles likes for videos, comments, and tweets via optional reference fields (`video`, `comment`, `tweet`). Only one field is populated per like document, keeping the schema flexible without needing separate like collections per entity.
 
-- Cloudinary cleanup
-  - Media upload and delete workflows use a Cloudinary utility to remove outdated assets when records are updated or deleted.
+**Cloudinary cleanup on update/delete**
+When a video or thumbnail is updated or a video is deleted, the old Cloudinary asset is explicitly deleted after the database operation succeeds. This prevents orphaned media files and keeps storage clean. Deletion always follows a successful DB write — never before — to avoid data loss if the DB operation fails.
 
-- JWT dual-token strategy
-  - Access and refresh tokens provide secure session management with short-lived access tokens and refresh token renewal.
+**JWT dual-token strategy**
+Short-lived access tokens handle request authentication. Long-lived refresh tokens stored in the database allow silent token renewal without requiring the user to log in again. On logout, the refresh token is invalidated server-side.
 
+**Ownership checks on all mutations**
+Every update, delete, and toggle operation fetches the resource first to verify the `owner` field matches `req.user._id` using Mongoose's `.equals()` method before proceeding. This prevents unauthorized modifications regardless of how the API is called.
