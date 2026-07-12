@@ -13,6 +13,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon -r dotenv/config --experimental-json-modules src/index.js",
+    "start": "node --experimental-json-modules src/index.js",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix"
   },
