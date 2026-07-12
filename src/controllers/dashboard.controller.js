@@ -116,8 +116,8 @@ const getChannelStats = asyncHandler(async (req, res) => {
       $group: {
         _id: null,
         totalVideos: { $sum: 1 },
-        totalViews: { $sum: "$views" },
         totalLikes: { $sum: { $size: "$videoLikes" } },
+        totalViews: { $sum: "$views" },
       },
     },
 
@@ -129,14 +129,12 @@ const getChannelStats = asyncHandler(async (req, res) => {
         as: "subscriberData",
       },
     },
-
-    // shape final output
     {
       $project: {
         _id: 0,
         totalVideos: 1,
-        totalViews: 1,
         totalLikes: 1,
+        totalViews: 1,
         totalSubscribers: {
           $ifNull: [{ $arrayElemAt: ["$subscriberData.total", 0] }, 0],
         },
