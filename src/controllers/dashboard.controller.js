@@ -37,24 +37,6 @@ const getChannelVideos = asyncHandler(async (req, res) => {
   const videoAggregate = Video.aggregate([
     { $match: matchStage },
     {
-      $lookup: {
-        from: "users",
-        localField: "owner",
-        foreignField: "_id",
-        as: "owner",
-        pipeline: [
-          {
-            $project: {
-              username: 1,
-              fullname: 1,
-              avatar: 1,
-            },
-          },
-        ],
-      },
-    },
-    { $unwind: "$owner" },
-    {
       $project: {
         videoFile: 1,
         thumbnail: 1,
@@ -64,7 +46,6 @@ const getChannelVideos = asyncHandler(async (req, res) => {
         views: 1,
         isPublished: 1,
         createdAt: 1,
-        owner: 1,
       },
     },
     { $sort: { [sortField]: sortOrder } },
