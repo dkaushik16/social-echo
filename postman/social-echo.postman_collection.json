@@ -1,0 +1,1089 @@
+{
+  "info": {
+    "_postman_id": "4f3e8246-33d7-4e1d-b64e-5603396e5582",
+    "name": "social-echo",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "29052777"
+  },
+  "item": [
+    {
+      "name": "auth",
+      "item": [
+        {
+          "name": "refresh-token",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "refreshToken",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2YTAzNWZmZDNiZDA1MzQwOGRkOTM0NWQiLCJpYXQiOjE3ODExNzQ3NjEsImV4cCI6MTc4MjAzODc2MX0.Y4UBcTksYbOFU0INhQSzd4XX1fxV-qetrRVq8_Or-bk",
+                  "type": "text",
+                  "uuid": "befbcb49-8346-4d5b-9967-f9b243b1aa0d"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{localServer}}users/refresh-token",
+              "host": [
+                "{{localServer}}users"
+              ],
+              "path": [
+                "refresh-token"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "login",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "password",
+                  "value": "Admin#123",
+                  "type": "text",
+                  "uuid": "9341082f-27a3-4ef0-bc3c-ac0561424bc4"
+                },
+                {
+                  "key": "email",
+                  "value": "austin316@gmail.com",
+                  "type": "text",
+                  "uuid": "cb5d7691-1556-4752-8af3-5d72ffd8b06e"
+                },
+                {
+                  "key": "email",
+                  "value": "musashi@gmail.com",
+                  "type": "text",
+                  "uuid": "bffde4e3-b0fb-4c1e-8406-e71a849285aa",
+                  "disabled": true
+                },
+                {
+                  "key": "email",
+                  "value": "uzui@gmail.com",
+                  "type": "text",
+                  "uuid": "bae1e24e-85e3-4195-a253-feecaa882120",
+                  "disabled": true
+                },
+                {
+                  "key": "email",
+                  "value": "kamado@gmail.com",
+                  "type": "text",
+                  "uuid": "fc6a781c-d28d-45a8-9bdc-1d5967d3dd6a",
+                  "disabled": true
+                },
+                {
+                  "key": "email",
+                  "value": "tomioka@gmail.com",
+                  "type": "text",
+                  "uuid": "3451f423-bfbd-42a5-a3eb-38d08f7f5c2a",
+                  "disabled": true
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{localServer}}users/login ",
+              "host": [
+                "{{localServer}}users"
+              ],
+              "path": [
+                "login "
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "register",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "username",
+                  "value": "giyu",
+                  "type": "text",
+                  "uuid": "652ef190-e76e-4118-9e5a-6b1524b53e74"
+                },
+                {
+                  "key": "email",
+                  "value": "tomioka@gmail.com",
+                  "type": "text",
+                  "uuid": "76b877a1-d991-4d2f-ad20-5accdec6fc68"
+                },
+                {
+                  "key": "fullname",
+                  "value": "giyu tomioka",
+                  "type": "text",
+                  "uuid": "4821fc74-3eab-492c-9be7-81f6f7703262"
+                },
+                {
+                  "key": "password",
+                  "value": "Admin#123",
+                  "type": "text",
+                  "uuid": "9f2c37c4-b692-4aa2-8e9d-b86d81ce6c84"
+                },
+                {
+                  "key": "avatar",
+                  "type": "file",
+                  "uuid": "a345db41-6d28-417e-95ab-87db51c0afb6",
+                  "src": "/D:/collection/giyu_tomioka.jpeg"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{localServer}}users/register",
+              "host": [
+                "{{localServer}}users"
+              ],
+              "path": [
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "logout",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "email",
+                  "value": "austin316@gmail.com",
+                  "type": "text",
+                  "uuid": "bb346315-af89-4c5e-a439-b463f13c6b5e"
+                },
+                {
+                  "key": "password",
+                  "value": "Admin#123",
+                  "type": "text",
+                  "uuid": "9341082f-27a3-4ef0-bc3c-ac0561424bc4"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{localServer}}users/logout",
+              "host": [
+                "{{localServer}}users"
+              ],
+              "path": [
+                "logout"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "change-password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "oldPassword",
+                  "value": "Admin#23",
+                  "type": "text",
+                  "uuid": "04d75a74-48d6-46b1-938f-efc6a46bbfd2"
+                },
+                {
+                  "key": "newPassword",
+                  "value": "Admin#123",
+                  "type": "text",
+                  "uuid": "e4bcf58e-bf92-4855-8e94-1bd24cb30691"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{localServer}}users/change-password",
+              "host": [
+                "{{localServer}}users"
+              ],
+              "path": [
+                "change-password"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "comment",
+      "item": [
+        {
+          "name": "add-comment",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "content",
+                  "value": "fourth comment is here",
+                  "type": "text",
+                  "uuid": "ec776c60-1f36-457f-b0e5-03708870c849"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{localServer}}comments/6a3a5b83d41359cc1ec5e400",
+              "host": [
+                "{{localServer}}comments"
+              ],
+              "path": [
+                "6a3a5b83d41359cc1ec5e400"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get-comment",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{localServer}}comments/6a3a5b83d41359cc1ec5e400",
+              "host": [
+                "{{localServer}}comments"
+              ],
+              "path": [
+                "6a3a5b83d41359cc1ec5e400"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "update-comment",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "content",
+                  "value": "the update version second",
+                  "type": "text",
+                  "uuid": "abf8b8c5-f465-42c0-8c19-57d207ec632c"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{localServer}}comments/c/6a4cbd84cf874b03a2b3ec46",
+              "host": [
+                "{{localServer}}comments"
+              ],
+              "path": [
+                "c",
+                "6a4cbd84cf874b03a2b3ec46"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "delete-comment",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": []
+            },
+            "url": {
+              "raw": "{{localServer}}comments/c/6a4cc9a1005b5b65fd730052",
+              "host": [
+                "{{localServer}}comments"
+              ],
+              "path": [
+                "c",
+                "6a4cc9a1005b5b65fd730052"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "like",
+      "item": [
+        {
+          "name": "like-video-toggle",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{localServer}}likes/toggle/v/6a39551e6a089fd2c2390cf5",
+              "host": [
+                "{{localServer}}likes"
+              ],
+              "path": [
+                "toggle",
+                "v",
+                "6a39551e6a089fd2c2390cf5"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "liked-videos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{localServer}}likes/videos",
+              "host": [
+                "{{localServer}}likes"
+              ],
+              "path": [
+                "videos"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "like-tweet-toggle",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{localServer}}likes/toggle/t/6a3d0f0540502d0ba5f485e4",
+              "host": [
+                "{{localServer}}likes"
+              ],
+              "path": [
+                "toggle",
+                "t",
+                "6a3d0f0540502d0ba5f485e4"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "like-comment-toggle",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{localServer}}likes/toggle/c/6a4cbce8cf874b03a2b3ec3c",
+              "host": [
+                "{{localServer}}likes"
+              ],
+              "path": [
+                "toggle",
+                "c",
+                "6a4cbce8cf874b03a2b3ec3c"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "subscriptions",
+      "item": [
+        {
+          "name": "toggle-subscription",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{localServer}}subscriptions/c/6a2406cb50b0d524ff17d6e9",
+              "host": [
+                "{{localServer}}subscriptions"
+              ],
+              "path": [
+                "c",
+                "6a2406cb50b0d524ff17d6e9"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get-subscribers",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{localServer}}subscriptions/c/6a035ffd3bd053408dd9345d",
+              "host": [
+                "{{localServer}}subscriptions"
+              ],
+              "path": [
+                "c",
+                "6a035ffd3bd053408dd9345d"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get-subscribed-channels",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{localServer}}subscriptions/my/channels",
+              "host": [
+                "{{localServer}}subscriptions"
+              ],
+              "path": [
+                "my",
+                "channels"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "tweet",
+      "item": [
+        {
+          "name": "create-tweet",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "content",
+                  "value": "the eited one is here ",
+                  "type": "text",
+                  "uuid": "985c7bed-ee6b-43a1-9383-556b1b9611d1"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{localServer}}tweets",
+              "host": [
+                "{{localServer}}tweets"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get-tweets",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{localServer}}tweets/user/6a035ffd3bd053408dd9345d",
+              "host": [
+                "{{localServer}}tweets"
+              ],
+              "path": [
+                "user",
+                "6a035ffd3bd053408dd9345d"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "update-tweet",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "content",
+                  "value": "edited version 4",
+                  "type": "text",
+                  "uuid": "dd22af20-32e8-4f0a-93a7-d8389a504373"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{localServer}}tweets/6a3d24c5bc2699ea35327dba",
+              "host": [
+                "{{localServer}}tweets"
+              ],
+              "path": [
+                "6a3d24c5bc2699ea35327dba"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "delete-tweet",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{localServer}}tweets/6a3d24c5bc2699ea35327dba",
+              "host": [
+                "{{localServer}}tweets"
+              ],
+              "path": [
+                "6a3d24c5bc2699ea35327dba"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "user",
+      "item": [
+        {
+          "name": "current-user",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{localServer}}users/current-user",
+              "host": [
+                "{{localServer}}users"
+              ],
+              "path": [
+                "current-user"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "update-details",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "fullname",
+                  "value": "stone cold steve austin",
+                  "type": "text",
+                  "uuid": "b6ee7538-1287-4acc-911b-abd2ef488cc4"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{localServer}}users/update-details",
+              "host": [
+                "{{localServer}}users"
+              ],
+              "path": [
+                "update-details"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "update-cover-image",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "coverImage",
+                  "type": "file",
+                  "uuid": "ca4e1cc5-0af3-4e5e-b0eb-7988c271143a",
+                  "src": "/D:/collection/towards_mystic.jpg"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{localServer}}users/update-cover-image",
+              "host": [
+                "{{localServer}}users"
+              ],
+              "path": [
+                "update-cover-image"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "update-avatar",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "avatar",
+                  "type": "file",
+                  "uuid": "ca4e1cc5-0af3-4e5e-b0eb-7988c271143a",
+                  "src": "/D:/collection/levi_ackeramann.jpg"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{localServer}}users/update-user-avatar",
+              "host": [
+                "{{localServer}}users"
+              ],
+              "path": [
+                "update-user-avatar"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "watch-history",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{localServer}}users/watch-history",
+              "host": [
+                "{{localServer}}users"
+              ],
+              "path": [
+                "watch-history"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "channel-profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{localServer}}users/channel/austin316",
+              "host": [
+                "{{localServer}}users"
+              ],
+              "path": [
+                "channel",
+                "austin316"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "video",
+      "item": [
+        {
+          "name": "video",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "",
+                "value": "",
+                "type": "text",
+                "disabled": true
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "thumbnail",
+                  "type": "file",
+                  "uuid": "f8e1ef26-d473-43fb-ada5-c4977b6cde90",
+                  "src": "/D:/collection/locality_in_rain.jpg"
+                },
+                {
+                  "key": "title",
+                  "value": "localityyyyyy in reainnnn",
+                  "type": "text",
+                  "uuid": "204336c2-f8e4-4f45-bf5a-cfd6aa4df6ab"
+                },
+                {
+                  "key": "description",
+                  "value": "hjlndfjkdsnfjklds kedkldsj fkldjkklvjfskdlfjsd",
+                  "type": "text",
+                  "uuid": "141042e3-f136-45cd-b323-49e50ee980a4"
+                },
+                {
+                  "key": "videoFile",
+                  "type": "file",
+                  "uuid": "0d8dec82-9baa-42cc-ae5d-a7aaed31619c",
+                  "src": "/C:/Users/Lenovo/Downloads/daily-nature.mp4"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{localServer}}videos/",
+              "host": [
+                "{{localServer}}videos"
+              ],
+              "path": [
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "videos",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "",
+                "value": "",
+                "type": "text",
+                "disabled": true
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": []
+            },
+            "url": {
+              "raw": "{{localServer}}videos",
+              "host": [
+                "{{localServer}}videos"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "single-video",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{localServer}}videos/6a39551e6a089fd2c2390cf5",
+              "host": [
+                "{{localServer}}videos"
+              ],
+              "path": [
+                "6a39551e6a089fd2c2390cf5"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "update-video",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "title",
+                  "value": "tttttttttttt",
+                  "type": "text",
+                  "uuid": "4dbca2fb-df62-4088-871b-c9284f8e86dc"
+                },
+                {
+                  "key": "description",
+                  "value": "ddddddd",
+                  "type": "text",
+                  "uuid": "61b2bad9-50e2-4712-a3c6-5cf1b23ae4dc"
+                },
+                {
+                  "key": "thumbnail",
+                  "type": "file",
+                  "uuid": "55ec2ce3-7e83-4fe5-a048-ea684c30d2ef",
+                  "src": "/D:/collection/batman1.jpg"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{localServer}}videos/6a3bc44551f81ccc874e4482",
+              "host": [
+                "{{localServer}}videos"
+              ],
+              "path": [
+                "6a3bc44551f81ccc874e4482"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "delete-video",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{localServer}}videos/6a3bc44551f81ccc874e4482",
+              "host": [
+                "{{localServer}}videos"
+              ],
+              "path": [
+                "6a3bc44551f81ccc874e4482"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "toggle-publish",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": []
+            },
+            "url": {
+              "raw": "{{localServer}}videos/toggle/publish/6a3bc44551f81ccc874e4482",
+              "host": [
+                "{{localServer}}videos"
+              ],
+              "path": [
+                "toggle",
+                "publish",
+                "6a3bc44551f81ccc874e4482"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "playlist",
+      "item": [
+        {
+          "name": "add-playlist",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "name",
+                  "value": "mugen train 3",
+                  "type": "text",
+                  "uuid": "68c2d031-fa6b-49ce-b0c6-c3cc9586175c"
+                },
+                {
+                  "key": "description",
+                  "value": "direct battle to upper 345",
+                  "type": "text",
+                  "uuid": "90f3ab17-cd43-49da-9067-f1bf72a179c1"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{localServer}}playlists/",
+              "host": [
+                "{{localServer}}playlists"
+              ],
+              "path": [
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get-playlists",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{localServer}}playlists/",
+              "host": [
+                "{{localServer}}playlists"
+              ],
+              "path": [
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "video-in-playlist",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": []
+            },
+            "url": {
+              "raw": "{{localServer}}playlists/6a4f9b63b07aed639de78867/video/6a3a5a3bd41359cc1ec5e3f8",
+              "host": [
+                "{{localServer}}playlists"
+              ],
+              "path": [
+                "6a4f9b63b07aed639de78867",
+                "video",
+                "6a3a5a3bd41359cc1ec5e3f8"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "update-playlist",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "name",
+                  "value": "sunrise countdown arc ",
+                  "type": "text",
+                  "uuid": "68c2d031-fa6b-49ce-b0c6-c3cc9586175c"
+                },
+                {
+                  "key": "description",
+                  "value": "battle to edure till sunrise  ",
+                  "type": "text",
+                  "uuid": "90f3ab17-cd43-49da-9067-f1bf72a179c1"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{localServer}}playlists/6a4f9b63b07aed639de78867",
+              "host": [
+                "{{localServer}}playlists"
+              ],
+              "path": [
+                "6a4f9b63b07aed639de78867"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Misc.",
+      "item": [
+        {
+          "name": "healthcheck",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{localServer}}healthcheck",
+              "host": [
+                "{{localServer}}healthcheck"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "channel-stats",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{localServer}}dashboard/stats",
+              "host": [
+                "{{localServer}}dashboard"
+              ],
+              "path": [
+                "stats"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "channel-videos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{localServer}}dashboard/videos",
+              "host": [
+                "{{localServer}}dashboard"
+              ],
+              "path": [
+                "videos"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

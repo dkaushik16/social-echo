@@ -193,15 +193,15 @@ All routes are prefixed with `/api/v1`.
 | PATCH | `/auth/profile` | Yes | Update account details |
 | PATCH | `/auth/avatar` | Yes | Update avatar image |
 | PATCH | `/auth/cover` | Yes | Update cover image |
-| GET | `/auth/channel/:id` | No | Get channel profile by user ID |
+| GET | `/auth/channel/:id` | Yes | Get channel profile by user ID |
 
 ### Videos
 
 | Method | Route | Auth Required | Description |
 |---|---|---|---|
 | POST | `/videos` | Yes | Upload a new video |
-| GET | `/videos` | No | Fetch all videos (pagination, search, sort, filter by user) |
-| GET | `/videos/:id` | No | Fetch a video by ID |
+| GET | `/videos` | Yes | Fetch all videos (pagination, search, sort, filter by user) |
+| GET | `/videos/:id` | Yes | Fetch a video by ID |
 | PATCH | `/videos/:id` | Yes | Update video title, description, or thumbnail |
 | DELETE | `/videos/:id` | Yes | Delete a video and remove assets from Cloudinary |
 | PATCH | `/videos/:id/publish` | Yes | Toggle video publish status |
@@ -211,7 +211,7 @@ All routes are prefixed with `/api/v1`.
 | Method | Route | Auth Required | Description |
 |---|---|---|---|
 | POST | `/comments/video/:videoId` | Yes | Add a comment to a video |
-| GET | `/comments/video/:videoId` | No | Fetch comments for a video (paginated + sorted) |
+| GET | `/comments/video/:videoId` | Yes | Fetch comments for a video (paginated + sorted) |
 | PATCH | `/comments/c/:commentId` | Yes | Update a comment |
 | DELETE | `/comments/c/:commentId` | Yes | Delete a comment |
 
@@ -229,7 +229,7 @@ All routes are prefixed with `/api/v1`.
 | Method | Route | Auth Required | Description |
 |---|---|---|---|
 | POST | `/tweets` | Yes | Create a tweet |
-| GET | `/tweets/user/:userId` | No | Get tweets by a specific user (paginated + search) |
+| GET | `/tweets/user/:userId` | Yes | Get tweets by a specific user (paginated + search) |
 | PATCH | `/tweets/:id` | Yes | Update a tweet |
 | DELETE | `/tweets/:id` | Yes | Delete a tweet |
 
@@ -238,7 +238,7 @@ All routes are prefixed with `/api/v1`.
 | Method | Route | Auth Required | Description |
 |---|---|---|---|
 | POST | `/subscriptions/c/:channelId` | Yes | Toggle subscribe / unsubscribe from a channel |
-| GET | `/subscriptions/c/:channelId` | No | Get subscribers of a channel (paginated + search) |
+| GET | `/subscriptions/c/:channelId` | Yes | Get subscribers of a channel (paginated + search) |
 | GET | `/subscriptions/my/channels` | Yes | Get channels the logged-in user subscribes to |
 
 ### Playlists
@@ -247,7 +247,7 @@ All routes are prefixed with `/api/v1`.
 |---|---|---|---|
 | POST | `/playlists` | Yes | Create a playlist |
 | GET | `/playlists` | Yes | Get logged-in user's playlists (paginated + search) |
-| GET | `/playlists/:id` | No | Get a single playlist with full video details |
+| GET | `/playlists/:id` | Yes | Get a single playlist with full video details |
 | PATCH | `/playlists/:id` | Yes | Update playlist name or description |
 | DELETE | `/playlists/:id` | Yes | Delete a playlist |
 | POST | `/playlists/:id/videos/:videoId` | Yes | Add a video to a playlist |
@@ -309,3 +309,12 @@ Short-lived access tokens handle request authentication. Long-lived refresh toke
 
 **Ownership checks on all mutations**
 Every update, delete, and toggle operation fetches the resource first to verify the `owner` field matches `req.user._id` using Mongoose's `.equals()` method before proceeding. This prevents unauthorized modifications regardless of how the API is called.
+
+
+## Postman Collection
+
+Import the collection from the `/postman` folder to test all API endpoints.
+
+1. Open Postman → Import → select `social-echo.postman_collection.json`.
+2. Set `baseUrl` variable to `http://localhost:8000/api/v1` in your Postman environment.
+3. Run `Auth/Login` first — authentication cookie is captured automatically for all secured routes.
